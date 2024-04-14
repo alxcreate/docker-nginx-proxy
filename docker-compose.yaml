@@ -1,0 +1,27 @@
+version: '3'
+
+services:
+  nginx:
+    hostname: servername
+    build:
+      context: ./nginx
+      dockerfile: Dockerfile
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./nginx/html:/var/www/html
+      - ./nginx/config/default:/etc/nginx/sites-available/default
+      - ./nginx/config/nginx.conf:/etc/nginx/nginx.conf
+      - ./nginx/certs/key.key:/etc/nginx/ssl/key.key
+      - ./nginx/certs/cert.crt:/etc/nginx/ssl/cert.crt
+    networks:
+      - net-proxy
+
+networks:
+  net-proxy:
+    driver: bridge
+    ipam:
+      driver: default
+      config:
+        - subnet: 172.16.0.0/24
